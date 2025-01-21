@@ -2,7 +2,7 @@ const express = require('express')
 const app = express()
 const port = 3000
 
-app.post('/', (req, res) => {
+app.get('/', (req, res) => {
   console.log(req.body, '<< params received')
   res.send({
     deal: 1,
