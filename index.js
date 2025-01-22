@@ -8,7 +8,7 @@ const hubspot = require('@hubspot/api-client')
 app.use(bodyParser.json()) // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 
-app.post('/', (req, res) => {
+app.post('/register', (req, res) => {
   console.log(req.body, '<< params received')
 
   res.send({
