@@ -1,7 +1,9 @@
 {
   "dependencies": {
+    "@hubspot/api-client": "^12.0.1",
     "express": "^4.21.2",
-    "firebase": "^11.2.0"
+    "firebase": "^11.2.0",
+    "hubspot": "^2.3.14"
   },
   "name": "pcs",
   "version": "1.0.0",
