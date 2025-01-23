@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require('express')
 const app = express()
 const port = 3000
@@ -10,7 +11,7 @@ app.use(bodyParser.json()) // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 
 const hubspotCli = new hubspot.Client({
-  accessToken: 'pat-na1-aff1e7ee-7023-4546-941a-766cc2ae0c8a',
+  accessToken: process.env.HUBSPOT_PRIVATE_KEY,
   checkLimit: true // (Optional) Specify whether to check the API limit on each call. Default: true
 })
 
@@ -29,7 +30,7 @@ app.post('/register', async (req, res) => {
     const contactObject = await hubspotCli.crm.contacts.basicApi.getById(item.objectId, ['hs_object_id', 'partner_id'])
     const partnerObject = await hubspotCli.crm.objects.basicApi.getById('2-11190825', contactObject.properties.partner_id, ['hs_object_id'])
 
-    const result = await axios.post('https://api-na1.hubapi.com/automation/v4/webhook-triggers/177047/FX3pS1z', {
+    const result = await axios.post(process.env.WORKFLOW_ENDPOINT, {
       partner: Number(partnerObject.properties.hs_object_id),
       contact: Number(contactObject.properties.hs_object_id)
     })
