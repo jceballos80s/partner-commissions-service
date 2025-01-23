@@ -28,13 +28,29 @@ app.post('/register', async (req, res) => {
 
   for await (const item of data) {
     const contactObject = await hubspotCli.crm.contacts.basicApi.getById(item.objectId, ['hs_object_id', 'partner_id'])
-    const partnerObject = await hubspotCli.crm.objects.basicApi.getById('2-11190825', contactObject.properties.partner_id, ['hs_object_id'])
-
-    const result = await axios.post(process.env.WORKFLOW_ENDPOINT, {
-      partner: Number(partnerObject.properties.hs_object_id),
-      contact: Number(contactObject.properties.hs_object_id)
+    const partnerSearch = await hubspotCli.crm.objects.searchApi.doSearch('2-11190825', {
+      // query: `partner_id=${contactObject.properties.partner_id}`,
+      "filterGroups": [
+        {
+          "filters": [
+            {
+              "propertyName": "partner_id",
+              "operator": "EQ",
+              "value": contactObject.properties.partner_id
+            }
+          ]
+        }
+      ],
+      properties: ['hs_object_id']
     })
-    results.push(result.data)
+    if (partnerSearch.results.length > 0) {
+      const partnerObject = partnerSearch.results[0]
+      const result = await axios.post(process.env.WORKFLOW_ENDPOINT, {
+        partner: Number(partnerObject.properties.hs_object_id),
+        contact: Number(contactObject.properties.hs_object_id)
+      })
+      results.push(result.data)
+    }
   }
 
   res.send({
